@@ -1,5 +1,5 @@
-import type { Player } from "../entities/Player";
+import type { GameState } from "../states/GameState";
 
 export interface GameStateListener {
-  notify(players: Record<string, Player>): void;
+  notify(gameState: GameState): void;
 }

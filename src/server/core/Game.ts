@@ -17,7 +17,9 @@ export class Game {
 
   private notifyGameState() {
     for (const listener of this.gameStateListener) {
-      listener.notify(this.players);
+      listener.notify({
+        players: this.players
+      });
     }
   }
 

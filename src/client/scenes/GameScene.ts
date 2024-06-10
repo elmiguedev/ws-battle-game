@@ -1,9 +1,11 @@
 import { Player } from "../entities/Player";
 import io, { Socket } from "socket.io-client";
+import type { GameState } from "../sockets/states/GameState";
 
 export class GameScene extends Phaser.Scene {
   private socket!: Socket;
   private controls!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private attackKey!: Phaser.Input.Keyboard.Key;
   private player: Player;
   private players: Record<string, Player> = {};
 
@@ -13,6 +15,7 @@ export class GameScene extends Phaser.Scene {
 
   create() {
     this.controls = this.input.keyboard.createCursorKeys();
+    this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.socket = io();
 
     this.socket.on("player_disconnected", (id: string) => {
@@ -23,9 +26,9 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.socket.on("game_state", (state: any) => {
-      Object.keys(state).forEach((playerId: string) => {
-        const playerState = state[playerId];
+    this.socket.on("game_state", (state: GameState) => {
+      Object.keys(state.players).forEach((playerId: string) => {
+        const playerState = state.players[playerId];
         if (playerState.id === this.socket.id) {
           if (this.player) {
             this.player.setPosition(playerState.x, playerState.y);
@@ -60,6 +63,10 @@ export class GameScene extends Phaser.Scene {
       if (this.controls.down.isDown) {
         this.socket.emit("move", "down");
       }
+    }
+
+    if (this.attackKey.isDown) {
+      this.socket.emit("attack");
     }
   }
 }

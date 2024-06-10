@@ -12,7 +12,8 @@ export class PlayerCreateAction {
     this.game.players[id] = {
       id: id,
       x: Utils.getIntBetween(200, 400),
-      y: Utils.getIntBetween(200, 400)
+      y: Utils.getIntBetween(200, 400),
+      hp: 100
     }
   }
 }

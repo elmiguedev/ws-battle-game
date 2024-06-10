@@ -1,15 +1,10 @@
 import type { Socket } from "socket.io";
 import type { PlayerMoveAction } from "../../../core/actions/PlayerMoveAction";
 
-export class PlayerMoveHandler {
-  constructor(
-    private socket: Socket,
-    private action: PlayerMoveAction
-  ) {
+export const PlayerMoveHandler = (socket: Socket, action: PlayerMoveAction) => {
+  return {
+    handle: (direction: string) => {
+      return action.execute(socket.id, direction)
+    }
   }
-
-  public handle(direction: string) {
-    this.action.execute(this.socket.id, direction);
-  }
-
 }

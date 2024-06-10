@@ -1,4 +1,5 @@
 import type { Game } from "../../core/Game";
+import { PlayerAttackAction } from "../../core/actions/PlayerAttackAction";
 import { PlayerCreateAction } from "../../core/actions/PlayerCreateAction";
 import { PlayerDisconnectAction } from "../../core/actions/PlayerDisconnectAction";
 import { PlayerMoveAction } from "../../core/actions/PlayerMoveAction";
@@ -13,7 +14,8 @@ export class ActionProvider {
     return {
       create: new PlayerCreateAction(this.game),
       move: new PlayerMoveAction(this.game),
-      disconnect: new PlayerDisconnectAction(this.game)
+      disconnect: new PlayerDisconnectAction(this.game),
+      attack: new PlayerAttackAction(this.game),
     }
   }
 }
