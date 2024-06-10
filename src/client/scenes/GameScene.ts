@@ -1,72 +1,50 @@
 import { Player } from "../entities/Player";
 import io, { Socket } from "socket.io-client";
 import type { GameState } from "../sockets/states/GameState";
+import type { GameSceneEntities } from "./GameSceneEntities";
+import { SocketManager } from "../sockets/SocketManager";
 
 export class GameScene extends Phaser.Scene {
-  private socket!: Socket;
+  private socketManager!: SocketManager;
   private controls!: Phaser.Types.Input.Keyboard.CursorKeys;
   private attackKey!: Phaser.Input.Keyboard.Key;
-  private player: Player;
-  private players: Record<string, Player> = {};
+  private entities: GameSceneEntities;
 
   constructor() {
     super("GameScene");
   }
 
   create() {
+    this.entities = {
+      players: {},
+      mainPlayer: null
+    }
     this.controls = this.input.keyboard.createCursorKeys();
     this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.socket = io();
+    this.socketManager = new SocketManager(this, this.entities);
 
-    this.socket.on("player_disconnected", (id: string) => {
-      const player = this.players[id];
-      if (player) {
-        player.destroy();
-        delete this.players[id];
-      }
-    });
 
-    this.socket.on("game_state", (state: GameState) => {
-      Object.keys(state.players).forEach((playerId: string) => {
-        const playerState = state.players[playerId];
-        if (playerState.id === this.socket.id) {
-          if (this.player) {
-            this.player.setPosition(playerState.x, playerState.y);
-          } else {
-            console.log("Creando player principal", playerState);
-            this.player = new Player(this, playerState.x, playerState.y);
-          }
-        } else {
-          if (this.players[playerState.id]) {
-            this.players[playerState.id].setPosition(playerState.x, playerState.y);
-          } else {
-            console.log("Creando enemigo", playerState, this.socket.id,);
-            this.players[playerState.id] = new Player(this, playerState.x, playerState.y);
-          }
-        }
-      })
-    });
 
   }
 
   update() {
-    if (this.player) {
+    if (this.entities.mainPlayer) {
       if (this.controls.left.isDown) {
-        this.socket.emit("move", "left");
+        this.socketManager.emit("move", "left");
       }
       if (this.controls.right.isDown) {
-        this.socket.emit("move", "right");
+        this.socketManager.emit("move", "right");
       }
       if (this.controls.up.isDown) {
-        this.socket.emit("move", "up");
+        this.socketManager.emit("move", "up");
       }
       if (this.controls.down.isDown) {
-        this.socket.emit("move", "down");
+        this.socketManager.emit("move", "down");
       }
     }
 
     if (this.attackKey.isDown) {
-      this.socket.emit("attack");
+      this.socketManager.emit("attack");
     }
   }
 }
