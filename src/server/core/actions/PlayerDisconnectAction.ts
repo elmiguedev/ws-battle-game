@@ -7,6 +7,6 @@ export class PlayerDisconnectAction {
   }
 
   public execute(id: string) {
-    delete this.game.players[id];
+     this.game.removePlayer(id);
   }
 }

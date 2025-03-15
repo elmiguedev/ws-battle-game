@@ -1,6 +1,3 @@
-import { Player } from "../entities/Player";
-import io, { Socket } from "socket.io-client";
-import type { GameState } from "../sockets/states/GameState";
 import type { GameSceneEntities } from "./GameSceneEntities";
 import { SocketManager } from "../sockets/SocketManager";
 

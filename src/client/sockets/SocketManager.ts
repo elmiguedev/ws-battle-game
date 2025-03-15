@@ -3,12 +3,15 @@ import type { GameSceneEntities } from "../scenes/GameSceneEntities";
 import type { GameState } from "./states/GameState";
 import { Player } from "../entities/Player";
 import type { Scene } from "phaser";
+
 export class SocketManager {
   private socket: Socket;
+
   constructor(private readonly scene: Scene, private readonly entities: GameSceneEntities) {
     this.socket = io();
-    this.socket.on("player_disconnected", (id: string) => {
+    this.socket.on("player_disconnect", (id: string) => {
       const player = this.entities.players[id];
+
       if (player) {
         player.destroy();
         delete this.entities.players[id];

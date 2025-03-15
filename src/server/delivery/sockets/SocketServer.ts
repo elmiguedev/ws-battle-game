@@ -6,6 +6,7 @@ import { PlayerDisconnectHandler } from "./handlers/PlayerDisconnectHandler";
 import { GameStateNotifier } from "./notifiers/GameStateNotifier";
 import { PlayerAttackHandler } from "./handlers/PlayerAttackHandler";
 import { PlayerMoveHandler } from "./handlers/PlayerMoveHandler";
+import { PlayerDisconnectNotifier } from "./notifiers/PlayerDisconnectNotifier";
 
 
 export class SocketServer {
@@ -27,15 +28,19 @@ export class SocketServer {
 
       const playerMoveHandler = PlayerMoveHandler(socket, actions.move);
       const playerAttackHandler = PlayerAttackHandler(socket, actions.attack);
-      const playerDisconnectHandler = new PlayerDisconnectHandler(socket, actions.disconnect);
+      const playerDisconnectHandler = PlayerDisconnectHandler(socket, actions.disconnect);
 
-      socket.on("disconnect", playerDisconnectHandler.handle.bind(playerDisconnectHandler));
+      socket.on("disconnect", playerDisconnectHandler.handle);
       socket.on("move", playerMoveHandler.handle);
       socket.on("attack", playerAttackHandler.handle);
 
-      const gameStateNotifier = new GameStateNotifier(this.socketServer);
+      const gameStateNotifier =  GameStateNotifier(this.socketServer);
+      const playerDisconnectNotifier = PlayerDisconnectNotifier(this.socketServer);
 
-      game.addGameStateListener(gameStateNotifier); // meter este notifier en el interactionProvider
+      // meter este notifier en el interactionProvider
+      game.addGameStateListener(gameStateNotifier); 
+      game.addPlayerDisconnectListener(playerDisconnectNotifier); 
+      
     });
   }
 }

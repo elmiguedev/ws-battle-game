@@ -1,15 +1,10 @@
 import type { Socket } from "socket.io";
 import type { PlayerDisconnectAction } from "../../../core/actions/PlayerDisconnectAction";
 
-export class PlayerDisconnectHandler {
-  constructor(
-    private socket: Socket,
-    private action: PlayerDisconnectAction
-  ) {
+export const PlayerDisconnectHandler = (socket: Socket, action: PlayerDisconnectAction) => {
+  return {
+    handle: (id: string) => {
+      action.execute(socket.id);
+    }
   }
-
-  public handle() {
-    this.action.execute(this.socket.id);
-  }
-
 }
