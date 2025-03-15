@@ -61,8 +61,9 @@ export class Player extends Phaser.GameObjects.Sprite {
   private playHurtAnimation() {
     this.play({
       key: "hurt",
-      timeScale: 0.3,
+      timeScale: 0.9,
       repeat: -1,
     }, true);
   }
+
 }

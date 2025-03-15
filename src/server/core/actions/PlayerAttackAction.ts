@@ -17,11 +17,11 @@ export class PlayerAttackAction {
     const player = this.game.players[props.playerId];
     const enemy = this.getNearestPlayer(props.playerId);
 
-    if (player) {
+    if (player && player.action !== "attack") {
       player.action = "attack";
       player.attackTimer = 10;
       
-      if (enemy) {
+      if (enemy && enemy.action !== "hurt") {
           enemy.hp = enemy.hp - 10;
           enemy.action = "hurt";
           enemy.hurtTimer = 10;
