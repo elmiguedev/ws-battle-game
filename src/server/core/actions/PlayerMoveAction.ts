@@ -9,6 +9,8 @@ export class PlayerMoveAction {
   public execute(id: string, direction: string) {
     const player = this.game.players[id];
     if (player) {
+      player.moveTimer = 10;
+      player.action = "move";
       switch (direction) {
         case "left": player.x -= 2; break;
         case "right": player.x += 2; break;

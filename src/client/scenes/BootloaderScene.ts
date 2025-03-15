@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
-import PlayerPng from "../assets/player.png";
+import PlayerPng from "../assets/sprites/player/player.png";
+import PlayerJson from "../assets/sprites/player/player.json";
 
 export class BootloaderScene extends Scene {
 
@@ -8,7 +9,7 @@ export class BootloaderScene extends Scene {
   }
 
   preload() {
-    this.load.image("player", PlayerPng);
+    this.load.aseprite("player", PlayerPng, PlayerJson);
     this.load.once("complete", () => {
       this.scene.start("GameScene");
     })

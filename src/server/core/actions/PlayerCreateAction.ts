@@ -13,7 +13,11 @@ export class PlayerCreateAction {
       id: id,
       x: Utils.getIntBetween(200, 400),
       y: Utils.getIntBetween(200, 400),
-      hp: 100
+      hp: 100,
+      action: "idle",
+      moveTimer: 0,
+      attackTimer: 0,
+      hurtTimer: 0
     }
   }
 }

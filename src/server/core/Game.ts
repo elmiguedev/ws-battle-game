@@ -9,6 +9,7 @@ export class Game {
 
   public start() {
     setInterval(() => {
+      this.checkPlayersTimers();
       this.notifyGameState();
     }, 1000 / 30);
   }
@@ -24,6 +25,31 @@ export class Game {
 
   public addPlayerDisconnectListener(listener: PlayerDisconnectListener) {
     this.playerDisconnectListener.push(listener);
+  }
+
+  private checkPlayersTimers() {
+    for (const player of Object.values(this.players)) {
+      if (player.attackTimer > 0) {
+        player.attackTimer--;
+        if (player.attackTimer === 0) {
+          player.action = "idle";
+        }
+      }
+
+      if (player.moveTimer > 0) {
+        player.moveTimer--;
+        if (player.moveTimer === 0) {
+          player.action = "idle";
+        }
+      }
+
+      if (player.hurtTimer > 0) {
+        player.hurtTimer--;
+        if (player.hurtTimer === 0) {
+          player.action = "idle";
+        }
+      }
+    }
   }
 
   private notifyGameState() {

@@ -23,13 +23,13 @@ export class SocketManager {
         const playerState = state.players[playerId];
         if (playerState.id === this.socket.id) {
           if (this.entities.mainPlayer) {
-            this.entities.mainPlayer.setPosition(playerState.x, playerState.y);
+            this.entities.mainPlayer.setPlayerState(playerState);
           } else {
             this.entities.mainPlayer = new Player(this.scene, playerState.x, playerState.y);
           }
         } else {
           if (this.entities.players[playerState.id]) {
-            this.entities.players[playerState.id].setPosition(playerState.x, playerState.y);
+            this.entities.players[playerState.id].setPlayerState(playerState);
           } else {
             this.entities.players[playerState.id] = new Player(this.scene, playerState.x, playerState.y);
           }
