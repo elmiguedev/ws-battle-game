@@ -1,11 +1,13 @@
 import type { GameSceneEntities } from "./GameSceneEntities";
 import { SocketManager } from "../sockets/SocketManager";
+import type { GameSceneHud } from "../huds/GameSceneHud";
 
 export class GameScene extends Phaser.Scene {
   private socketManager!: SocketManager;
   private controls!: Phaser.Types.Input.Keyboard.CursorKeys;
   private attackKey!: Phaser.Input.Keyboard.Key;
   private entities: GameSceneEntities;
+  private hud!: GameSceneHud;
 
   constructor() {
     super("GameScene");
@@ -20,7 +22,7 @@ export class GameScene extends Phaser.Scene {
     this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.socketManager = new SocketManager(this, this.entities);
 
-
+    this.createHud();
 
   }
 
@@ -40,8 +42,26 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
+
+
     if (this.attackKey.isDown) {
       this.socketManager.emit("attack");
     }
+  }
+
+  private createHud() {
+    this.scene.run("GameSceneHud", {
+      onAttack: () => {
+        this.socketManager.emit("attack");
+      },
+      onMove: (direction: any) => {
+        this.socketManager.emit("move", direction);
+      }
+    });
+
+
+    this.hud = this.scene.get("HudScene") as GameSceneHud;
+
+
   }
 }

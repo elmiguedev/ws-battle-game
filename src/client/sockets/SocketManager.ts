@@ -26,6 +26,7 @@ export class SocketManager {
             this.entities.mainPlayer.setPlayerState(playerState);
           } else {
             this.entities.mainPlayer = new Player(this.scene, playerState.x, playerState.y);
+            this.scene.cameras.main.startFollow(this.entities.mainPlayer);
           }
         } else {
           if (this.entities.players[playerState.id]) {

@@ -12,8 +12,8 @@ export class PlayerCreateAction {
     console.log("player connected", id);
     this.game.players[id] = {
       id: id,
-      x: Utils.getIntBetween(200, 400),
-      y: Utils.getIntBetween(200, 400),
+      x: 0,
+      y: 0,
       hp: MAX_HP,
       action: "idle",
       moveTimer: 0,
