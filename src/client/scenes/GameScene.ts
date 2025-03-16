@@ -23,7 +23,7 @@ export class GameScene extends Phaser.Scene {
     this.socketManager = new SocketManager(this, this.entities);
 
     this.createHud();
-
+    this.createGrid();
   }
 
   update() {
@@ -63,5 +63,9 @@ export class GameScene extends Phaser.Scene {
     this.hud = this.scene.get("HudScene") as GameSceneHud;
 
 
+  }
+
+  private createGrid() {
+    this.add.grid(0, 0, 2000, 2000, 50, 50, 0x000000, 0, 0xffffff, 0.3);
   }
 }

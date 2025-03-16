@@ -27,7 +27,7 @@ export class TouchControls extends Phaser.GameObjects.Container {
         this.attackButton = this.scene.add.circle(
             this.scene.game.canvas.width - 70,
             this.scene.game.canvas.height - 200,
-            70,
+            50,
             0xff0000,
             0.5
         )
@@ -51,7 +51,7 @@ export class TouchControls extends Phaser.GameObjects.Container {
     private createJoystick() {
         const plugin: any = this.scene.plugins.get("rexVirtualJoystick");
         this.joystick = plugin.add(this, {
-            x: 50,
+            x: 70,
             y: this.scene.game.canvas.height - 200,
             radius: 50,
             base: this.scene.add.circle(0, 0, 50, 0x888888, 0.5),
