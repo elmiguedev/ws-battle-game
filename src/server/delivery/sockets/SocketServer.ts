@@ -24,7 +24,11 @@ export class SocketServer {
     });
 
     this.socketServer.on("connection", (socket) => {
-      actions.create.execute(socket.id);
+      const queryData = socket.handshake.query;
+      actions.create.execute({
+        id: socket.id,
+        name: `${queryData.name}` || `Player`
+      });
 
       const playerMoveHandler = PlayerMoveHandler(socket, actions.move);
       const playerAttackHandler = PlayerAttackHandler(socket, actions.attack);

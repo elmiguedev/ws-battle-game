@@ -7,8 +7,12 @@ import type { Scene } from "phaser";
 export class SocketManager {
   private socket: Socket;
 
-  constructor(private readonly scene: Scene, private readonly entities: GameSceneEntities) {
-    this.socket = io();
+  constructor(private readonly scene: Scene, private readonly entities: GameSceneEntities, data: any) {
+    this.socket = io({
+      query: {
+        name: data.name
+      }
+    });
     this.socket.on("player_disconnect", (id: string) => {
       const player = this.entities.players[id];
 

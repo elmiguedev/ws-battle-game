@@ -5,23 +5,35 @@ import { HpBar } from "./HpBar";
 export class Player extends Phaser.GameObjects.Sprite {
 
   private hpBar: HpBar;
+  private txtName: Phaser.GameObjects.Text;
 
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, 'player');
     this.anims.createFromAseprite('player');
     this.scene.add.existing(this);
     this.createHpBar();
+    this.createName();
   }
 
   public setPlayerState(state: PlayerState) {
     this.move(state.x, state.y);
     this.playAnimation(state.action);
     this.hpBar.setValue(state.hp);
+    this.txtName.setText(state.name);
   }
 
   public destroy() {
     super.destroy(true);
     this.hpBar.destroy();
+  }
+
+  private createName() {
+    this.txtName = this.scene.add.text(this.x, this.y - 60, this.name, {
+      fontFamily: 'Tiny5',
+      fontSize: '16px',
+      color: '#ffffff',
+      align: 'center'
+    }).setOrigin(0.5, 0);
   }
 
   private createHpBar() {
@@ -37,6 +49,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.setDepth(this.y);
     this.hpBar.setPosition(this.x - 25, this.y - 40);
     this.hpBar.setDepth(this.y);
+    this.txtName.setPosition(this.x, this.y - 60);
+    this.txtName.setDepth(this.y);
   }
 
   private playAnimation(key: string) {

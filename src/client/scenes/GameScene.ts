@@ -9,9 +9,14 @@ export class GameScene extends Phaser.Scene {
   private attackKey!: Phaser.Input.Keyboard.Key;
   private entities: GameSceneEntities;
   private hud!: GameSceneHud;
+  private sceneData: any;
 
   constructor() {
     super("GameScene");
+  }
+
+  init(data: any) {
+    this.sceneData = data;
   }
 
   create() {
@@ -21,7 +26,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.controls = this.input.keyboard.createCursorKeys();
     this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.socketManager = new SocketManager(this, this.entities);
+    this.socketManager = new SocketManager(this, this.entities, this.sceneData);
 
     this.createHud();
     this.createGrid();

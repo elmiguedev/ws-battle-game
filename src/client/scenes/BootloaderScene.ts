@@ -11,7 +11,7 @@ export class BootloaderScene extends Scene {
   preload() {
     this.load.aseprite("player", PlayerPng, PlayerJson);
     this.load.once("complete", () => {
-      this.scene.start("GameScene");
+      this.scene.start("StartScene");
     })
   }
 }

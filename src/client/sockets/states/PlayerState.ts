@@ -1,5 +1,6 @@
 export interface PlayerState {
   id: string;
+  name: string;
   x: number;
   y: number;
   hp: number;
