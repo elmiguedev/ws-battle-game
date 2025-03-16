@@ -34,13 +34,13 @@ export class SocketServer {
       socket.on("move", playerMoveHandler.handle);
       socket.on("attack", playerAttackHandler.handle);
 
-      const gameStateNotifier =  GameStateNotifier(this.socketServer);
+      const gameStateNotifier = GameStateNotifier(this.socketServer);
       const playerDisconnectNotifier = PlayerDisconnectNotifier(this.socketServer);
 
       // meter este notifier en el interactionProvider
-      game.addGameStateListener(gameStateNotifier); 
-      game.addPlayerDisconnectListener(playerDisconnectNotifier); 
-      
+      game.addGameStateListener(gameStateNotifier);
+      game.addPlayerDisconnectListener(playerDisconnectNotifier);
+
     });
   }
 }

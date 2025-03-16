@@ -1,17 +1,31 @@
 import Phaser, { Scene } from "phaser"
 import type { PlayerState } from "../sockets/states/PlayerState";
+import { HpBar } from "./HpBar";
 
 export class Player extends Phaser.GameObjects.Sprite {
-  
+
+  private hpBar: HpBar;
+
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, 'player');
     this.anims.createFromAseprite('player');
     this.scene.add.existing(this);
+    this.createHpBar();
   }
 
-  public setPlayerState(state:PlayerState) {
+  public setPlayerState(state: PlayerState) {
     this.move(state.x, state.y);
     this.playAnimation(state.action);
+    this.hpBar.setValue(state.hp);
+  }
+
+  public destroy() {
+    super.destroy(true);
+    this.hpBar.destroy();
+  }
+
+  private createHpBar() {
+    this.hpBar = new HpBar(this.scene, this.x - 25, this.y - 40);
   }
 
   private move(x: number, y: number) {
@@ -20,12 +34,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
     this.x = x;
     this.y = y;
+    this.setDepth(this.y);
+    this.hpBar.setPosition(this.x - 25, this.y - 40);
+    this.hpBar.setDepth(this.y);
   }
 
   private playAnimation(key: string) {
     switch (key) {
 
-      case "idle": 
+      case "idle":
         this.playIdleAnimation();
         break;
 
@@ -33,12 +50,16 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.playWalkAnimation();
         break;
 
-      case "attack": 
+      case "attack":
         this.playAttackAnimation();
         break;
 
       case "hurt":
         this.playHurtAnimation();
+        break;
+
+      case "dead":
+        this.playDeathAnimation();
         break;
 
       default:
@@ -59,11 +80,11 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private playHurtAnimation() {
-    this.play({
-      key: "hurt",
-      timeScale: 0.9,
-      repeat: -1,
-    }, true);
+    this.play({ key: "hurt", timeScale: 0.9, repeat: -1, }, true);
+  }
+
+  private playDeathAnimation() {
+    this.play({ key: "dead", timeScale: 0.9 }, true);
   }
 
 }

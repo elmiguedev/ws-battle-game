@@ -1,11 +1,13 @@
 import type { Player } from "./entities/Player";
 import type { GameStateListener } from "./listeners/GameStateListener";
+import type { PlayerDeathListener } from "./listeners/PlayerDeathListener";
 import type { PlayerDisconnectListener } from "./listeners/PlayerDisconnectListener";
 
 export class Game {
   public players: Record<string, Player> = {};
   private gameStateListener: GameStateListener[] = []
   private playerDisconnectListener: PlayerDisconnectListener[] = []
+  private playerDeathListener: PlayerDeathListener[] = []
 
   public start() {
     setInterval(() => {
@@ -14,7 +16,7 @@ export class Game {
     }, 1000 / 30);
   }
 
-  public removePlayer(playerId:string) {
+  public removePlayer(playerId: string) {
     delete this.players[playerId];
     this.notifyPlayerDisconnected(playerId);
   }
@@ -27,8 +29,15 @@ export class Game {
     this.playerDisconnectListener.push(listener);
   }
 
+  public addPlayerDeathListener(listener: PlayerDeathListener) {
+    this.playerDeathListener.push(listener);
+  }
+
   private checkPlayersTimers() {
     for (const player of Object.values(this.players)) {
+      if (player.action === "dead") {
+        continue;
+      }
       if (player.attackTimer > 0) {
         player.attackTimer--;
         if (player.attackTimer === 0) {
@@ -62,6 +71,12 @@ export class Game {
 
   private notifyPlayerDisconnected(id: string) {
     for (const listener of this.playerDisconnectListener) {
+      listener.notify(id);
+    }
+  }
+
+  public notifyPlayerDeath(id: string) {
+    for (const listener of this.playerDeathListener) {
       listener.notify(id);
     }
   }
