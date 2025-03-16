@@ -1,6 +1,7 @@
 import type { GameSceneEntities } from "./GameSceneEntities";
 import { SocketManager } from "../sockets/SocketManager";
 import type { GameSceneHud } from "../huds/GameSceneHud";
+import { ARENA_SIZE } from "../../core/utils/Constants";
 
 export class GameScene extends Phaser.Scene {
   private socketManager!: SocketManager;
@@ -66,6 +67,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createGrid() {
-    this.add.grid(0, 0, 2000, 2000, 50, 50, 0x000000, 0, 0xffffff, 0.3);
+    this.add.grid(0, 0, ARENA_SIZE, ARENA_SIZE, 50, 50, 0x000000, 0, 0xffffff, 0.3);
   }
 }
