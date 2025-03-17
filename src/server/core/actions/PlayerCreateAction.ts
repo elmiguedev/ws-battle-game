@@ -25,7 +25,8 @@ export class PlayerCreateAction {
       action: "idle",
       moveTimer: 0,
       attackTimer: 0,
-      hurtTimer: 0
+      hurtTimer: 0,
+      score: 0
     }
   }
 }

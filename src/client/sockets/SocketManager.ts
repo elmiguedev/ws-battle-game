@@ -3,11 +3,12 @@ import type { GameSceneEntities } from "../scenes/GameSceneEntities";
 import type { GameState } from "./states/GameState";
 import { Player } from "../entities/Player";
 import type { Scene } from "phaser";
+import type { GameSceneHud } from "../huds/GameSceneHud";
 
 export class SocketManager {
   private socket: Socket;
 
-  constructor(private readonly scene: Scene, private readonly entities: GameSceneEntities, data: any) {
+  constructor(private readonly scene: Scene, private readonly entities: GameSceneEntities, private readonly hud: GameSceneHud, data: any) {
     this.socket = io({
       query: {
         name: data.name
@@ -23,6 +24,9 @@ export class SocketManager {
     });
 
     this.socket.on("game_state", (state: GameState) => {
+      if (hud) {
+        hud.updateState(state);
+      }
       Object.keys(state.players).forEach((playerId: string) => {
         const playerState = state.players[playerId];
         if (playerState.id === this.socket.id) {

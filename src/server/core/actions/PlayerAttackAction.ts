@@ -32,6 +32,7 @@ export class PlayerAttackAction {
         if (enemy.hp <= 0) {
           this.game.notifyPlayerDeath(enemy.id);
           enemy.action = "dead";
+          player.score++;
         }
       }
     }

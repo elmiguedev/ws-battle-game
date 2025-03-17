@@ -8,5 +8,5 @@ export interface PlayerState {
   moveTimer: number;
   attackTimer: number;
   hurtTimer: number;
-
+  score: number;
 }

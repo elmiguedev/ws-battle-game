@@ -14,8 +14,9 @@ export class TextField extends Phaser.GameObjects.Container {
         this.txt = document.createElement("input");
         this.txt.type = "text";
         this.txt.style.borderRadius = "0";
-        this.txt.style.backgroundColor = "white";
-        this.txt.style.border = "4px solid black";
+        this.txt.style.backgroundColor = "transparent";
+        this.txt.style.color = "white";
+        this.txt.style.border = "4px solid white";
         this.txt.style.outline = "none";
         this.txt.style.padding = "3px";
         this.txt.style.height = "32px";

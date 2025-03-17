@@ -8,5 +8,5 @@ export interface Player {
   moveTimer: number;
   attackTimer: number;
   hurtTimer: number;
-
+  score: number;
 }

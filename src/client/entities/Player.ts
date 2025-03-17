@@ -24,7 +24,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   public destroy() {
     super.destroy(true);
-    this.hpBar.destroy();
+    this.hpBar.destroy(true);
+    this.txtName.destroy(true);
   }
 
   private createName() {
