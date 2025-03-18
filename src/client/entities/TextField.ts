@@ -1,12 +1,21 @@
+interface TextFieldProps {
+    scene: Phaser.Scene;
+    x: number;
+    y: number;
+    width?: number;
+    height?: number;
+}
 export class TextField extends Phaser.GameObjects.Container {
     private txt: HTMLInputElement;
     private dom: Phaser.GameObjects.DOMElement;
+    private props: TextFieldProps;
 
     public onKeyEnter?: Function;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y);
+    constructor(props: TextFieldProps) {
+        super(props.scene, props.x, props.y);
         this.scene.add.existing(this);
+        this.props = props;
         this.createInputText();
     }
 
@@ -23,8 +32,9 @@ export class TextField extends Phaser.GameObjects.Container {
         this.txt.style.fontFamily = "Tiny5";
         this.txt.style.fontSize = "24px";
         this.txt.style.textAlign = "center";
-        this.txt.style.width = "200px";
-        this.txt.style.height = "42px";
+        this.txt.style.margin = 'none';
+        this.txt.style.width = `${this.props.width}px` || "200px";
+        this.txt.style.height = `${this.props.height}px` || "50px";
         this.txt.maxLength = 24;
         this.txt.onkeydown = (event) => {
             if (event.key === "Enter") {
@@ -34,7 +44,7 @@ export class TextField extends Phaser.GameObjects.Container {
             }
         }
 
-        this.dom = this.scene.add.dom(0, 0, this.txt)
+        this.dom = this.scene.add.dom(0, 0, this.txt).setOrigin(0.5, 0.5);
         this.add(this.dom);
     }
 
@@ -44,5 +54,10 @@ export class TextField extends Phaser.GameObjects.Container {
 
     public setText(value: string) {
         this.txt.value = value;
+    }
+
+    public setOrigin(x: number, y?: number) {
+        this.dom.setOrigin(x, y);
+        return this;
     }
 }

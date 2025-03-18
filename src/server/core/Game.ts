@@ -1,15 +1,24 @@
+import { ARENA_SIZE } from "../../core/utils/Constants";
 import type { Player } from "./entities/Player";
 import type { GameStateListener } from "./listeners/GameStateListener";
 import type { PlayerDeathListener } from "./listeners/PlayerDeathListener";
 import type { PlayerDisconnectListener } from "./listeners/PlayerDisconnectListener";
+import type { ItemState } from "./states/ItemState";
+import { Utils } from "./utils/Utils";
 
 export class Game {
   public players: Record<string, Player> = {};
+  public items: Record<string, ItemState> = {};
   private gameStateListener: GameStateListener[] = []
   private playerDisconnectListener: PlayerDisconnectListener[] = []
   private playerDeathListener: PlayerDeathListener[] = []
 
   public start() {
+
+    for (let i = 0; i < 10; i++) {
+      this.createRandomHealItem();
+    }
+
     setInterval(() => {
       this.checkPlayersTimers();
       this.notifyGameState();
@@ -31,6 +40,13 @@ export class Game {
 
   public addPlayerDeathListener(listener: PlayerDeathListener) {
     this.playerDeathListener.push(listener);
+  }
+
+  private createRandomHealItem() {
+    const x = Utils.getIntBetween(-ARENA_SIZE / 2, ARENA_SIZE / 2);
+    const y = Utils.getIntBetween(-ARENA_SIZE / 2, ARENA_SIZE / 2);
+    const id = Math.random().toString(36).substring(2, 9);
+    this.items[id] = { id, x, y, key: "heal" };
   }
 
   private checkPlayersTimers() {
@@ -65,6 +81,7 @@ export class Game {
     for (const listener of this.gameStateListener) {
       listener.notify({
         players: this.players,
+        items: this.items
       });
     }
   }

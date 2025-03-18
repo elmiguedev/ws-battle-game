@@ -4,6 +4,7 @@ import type { GameState } from "./states/GameState";
 import { Player } from "../entities/Player";
 import type { Scene } from "phaser";
 import type { GameSceneHud } from "../huds/GameSceneHud";
+import { HealItem } from "../entities/HealItem";
 
 export class SocketManager {
   private socket: Socket;
@@ -35,6 +36,7 @@ export class SocketManager {
           } else {
             this.entities.mainPlayer = new Player(this.scene, playerState.x, playerState.y);
             this.scene.cameras.main.startFollow(this.entities.mainPlayer);
+            this.hud.setMainPlayer(this.entities.mainPlayer);
           }
         } else {
           if (this.entities.players[playerState.id]) {
@@ -44,7 +46,27 @@ export class SocketManager {
           }
         }
       })
+
+      // pone los items
+      Object.keys(state.items).forEach((itemId: string) => {
+        const item = state.items[itemId];
+        if (!this.entities.items[itemId]) {
+          console.log("crea el item", item)
+          this.entities.items[itemId] = new HealItem(
+            this.scene,
+            item.x,
+            item.y
+          )
+        }
+      })
     });
+  }
+
+  public destroy() {
+    if (!this.socket.disconnected) {
+      this.socket.disconnect();
+      this.socket.close();
+    }
   }
 
   public emit(event: string, data?: any) {

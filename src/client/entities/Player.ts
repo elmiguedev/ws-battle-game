@@ -6,6 +6,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private hpBar: HpBar;
   private txtName: Phaser.GameObjects.Text;
+  private playerState: PlayerState;
 
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, 'player');
@@ -16,10 +17,16 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   public setPlayerState(state: PlayerState) {
+    this.playerState = state;
     this.move(state.x, state.y);
     this.playAnimation(state.action);
     this.hpBar.setValue(state.hp);
     this.txtName.setText(state.name);
+  }
+
+  public isDead() {
+    if (!this.playerState) return false;
+    return this.playerState.action === "dead";
   }
 
   public destroy() {
