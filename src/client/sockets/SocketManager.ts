@@ -5,6 +5,7 @@ import { Player } from "../entities/Player";
 import type { Scene } from "phaser";
 import type { GameSceneHud } from "../huds/GameSceneHud";
 import { HealItem } from "../entities/HealItem";
+import type { ItemState } from "../../server/core/states/ItemState";
 
 export class SocketManager {
   private socket: Socket;
@@ -22,6 +23,16 @@ export class SocketManager {
         player.destroy();
         delete this.entities.players[id];
       }
+    });
+
+    this.socket.on("item_collected", (item: ItemState) => {
+      const itemEntity = this.entities.items[item.id];
+
+      if (itemEntity) {
+        itemEntity.destroy();
+        delete this.entities.items[item.id];
+      }
+
     });
 
     this.socket.on("game_state", (state: GameState) => {
@@ -51,7 +62,6 @@ export class SocketManager {
       Object.keys(state.items).forEach((itemId: string) => {
         const item = state.items[itemId];
         if (!this.entities.items[itemId]) {
-          console.log("crea el item", item)
           this.entities.items[itemId] = new HealItem(
             this.scene,
             item.x,

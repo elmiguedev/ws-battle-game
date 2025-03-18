@@ -7,6 +7,7 @@ import { GameStateNotifier } from "./notifiers/GameStateNotifier";
 import { PlayerAttackHandler } from "./handlers/PlayerAttackHandler";
 import { PlayerMoveHandler } from "./handlers/PlayerMoveHandler";
 import { PlayerDisconnectNotifier } from "./notifiers/PlayerDisconnectNotifier";
+import { PlayerItemNotifier } from "./notifiers/PlayerItemNotifier";
 
 
 export class SocketServer {
@@ -40,10 +41,12 @@ export class SocketServer {
 
       const gameStateNotifier = GameStateNotifier(this.socketServer);
       const playerDisconnectNotifier = PlayerDisconnectNotifier(this.socketServer);
+      const playerItemNotifier = PlayerItemNotifier(this.socketServer);
 
       // meter este notifier en el interactionProvider
       game.addGameStateListener(gameStateNotifier);
       game.addPlayerDisconnectListener(playerDisconnectNotifier);
+      game.addPlayerItemListener(playerItemNotifier);
 
     });
   }
