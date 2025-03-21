@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "start": "vite build src/client --config src/client/vite/vite.config.js && bun src/server/index.ts --watch",
-    "dev": "concurrently 'vite build -w src/client --config src/client/vite/vite.config.ts' 'bun --watch src/server/index.ts '"
+    "dev:server": "bun --watch src/server/index.ts",
+    "dev:client": "vite build -w src/client --config src/client/vite/vite.config.ts",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"Server, Client\" -c \"yellow.bold,cyan.bold\" \"npm run dev:server\" \"npm run dev:client\""
   },
   "devDependencies": {
     "@types/bun": "^1.2.5",
@@ -16,10 +18,16 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "BlobBuilder": "^0.10.0",
+    "binary-pack": "^1.0.2",
     "express": "^4.21.2",
+    "peer": "^1.0.2",
+    "peerjs": "^1.5.4",
     "phaser": "^3.88.2",
     "phaser3-rex-plugins": "^1.80.14",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "wrtc": "^0.4.7",
+    "xmlhttprequest": "^1.8.0"
   }
 }

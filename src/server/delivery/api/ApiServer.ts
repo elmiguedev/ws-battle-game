@@ -18,5 +18,13 @@ export class ApiServer {
     this.app.use("/", express.static(path.join(__dirname, "../../../", "client/dist")));
   }
 
+  public getApp() {
+    return this.app;
+  }
+
+  public getServer() {
+    return this.server;
+  }
+
 
 }

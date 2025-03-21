@@ -6,8 +6,9 @@ import type { Scene } from "phaser";
 import type { GameSceneHud } from "../huds/GameSceneHud";
 import { HealItem } from "../entities/HealItem";
 import type { ItemState } from "../../server/core/states/ItemState";
+import type { CommunicationManager } from "../CommunicationManager";
 
-export class SocketManager {
+export class SocketManager implements CommunicationManager {
   private socket: Socket;
 
   constructor(private readonly scene: Scene, private readonly entities: GameSceneEntities, private readonly hud: GameSceneHud, data: any) {

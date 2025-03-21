@@ -2,10 +2,12 @@ import type { GameSceneEntities } from "./GameSceneEntities";
 import { SocketManager } from "../sockets/SocketManager";
 import type { GameSceneHud } from "../huds/GameSceneHud";
 import { ARENA_SIZE } from "../../core/utils/Constants";
-import { HealItem } from "../entities/HealItem";
+import type { CommunicationManager } from "../CommunicationManager";
+import { WebRtcManager } from "../webrtc/WebRtcManager";
+
 
 export class GameScene extends Phaser.Scene {
-  private socketManager!: SocketManager;
+  private communicationManager!: CommunicationManager;
   private controls!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keyControls!: {
     up: Phaser.Input.Keyboard.Key;
@@ -27,11 +29,28 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.createEntities();
+    this.createControls();
+    this.createHud();
+    this.createGrid();
+    this.createCommunicationManager();
+    this.createShutdownHandler();
+  }
+
+  update() {
+    this.checkControls();
+    this.checkRestartButton();
+  }
+
+  private createEntities() {
     this.entities = {
       players: {},
       items: {},
       mainPlayer: null
     }
+  }
+
+  private createControls() {
     this.controls = this.input.keyboard.createCursorKeys();
     this.keyControls = {
       up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -40,46 +59,15 @@ export class GameScene extends Phaser.Scene {
       right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     }
     this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-    this.createHud();
-    this.createGrid();
-
-    this.socketManager = new SocketManager(this, this.entities, this.hud, this.sceneData);
-
-  }
-
-  update() {
-    if (this.entities.mainPlayer) {
-      if (this.controls.left.isDown || this.keyControls.left.isDown) {
-        this.socketManager.emit("move", "left");
-      }
-      if (this.controls.right.isDown || this.keyControls.right.isDown) {
-        this.socketManager.emit("move", "right");
-      }
-      if (this.controls.up.isDown || this.keyControls.up.isDown) {
-        this.socketManager.emit("move", "up");
-      }
-      if (this.controls.down.isDown || this.keyControls.down.isDown) {
-        this.socketManager.emit("move", "down");
-      }
-    }
-
-
-
-    if (this.attackKey.isDown) {
-      this.socketManager.emit("attack");
-    }
-
-    this.checkRestartButton();
   }
 
   private createHud() {
     this.scene.run("GameSceneHud", {
       onAttack: () => {
-        this.socketManager.emit("attack");
+        this.communicationManager.emit("attack");
       },
       onMove: (direction: any) => {
-        this.socketManager.emit("move", direction);
+        this.communicationManager.emit("move", direction);
       },
       onRestart: () => {
         this.restartGame();
@@ -92,9 +80,35 @@ export class GameScene extends Phaser.Scene {
 
   }
 
+  private createCommunicationManager() {
+    //this.communicationManager = new SocketManager(this, this.entities, this.hud, this.sceneData);
+    this.communicationManager = new WebRtcManager(this, this.entities, this.hud, this.sceneData);
+  }
+
   private checkRestartButton() {
     if (this.entities.mainPlayer && this.entities.mainPlayer.isDead()) {
       this.hud.showRestartButton();
+    }
+  }
+
+  private checkControls() {
+    if (this.entities.mainPlayer) {
+      if (this.controls.left.isDown || this.keyControls.left.isDown) {
+        this.communicationManager.emit("move", "left");
+      }
+      if (this.controls.right.isDown || this.keyControls.right.isDown) {
+        this.communicationManager.emit("move", "right");
+      }
+      if (this.controls.up.isDown || this.keyControls.up.isDown) {
+        this.communicationManager.emit("move", "up");
+      }
+      if (this.controls.down.isDown || this.keyControls.down.isDown) {
+        this.communicationManager.emit("move", "down");
+      }
+    }
+
+    if (this.attackKey.isDown) {
+      this.communicationManager.emit("attack");
     }
   }
 
@@ -103,7 +117,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   private restartGame() {
-    this.socketManager.destroy();
+    this.communicationManager.destroy();
     this.scene.restart(this.sceneData);
+  }
+
+  private createShutdownHandler() {
+    this.events.on('shutdown', () => {
+      console.log('Escena cerrada (shutdown)');
+      this.communicationManager.destroy();
+    });
   }
 }
